@@ -1,0 +1,19 @@
+{
+	"name": "test-package",
+	"version": "0.0.1",
+	"dependencies": {
+		"express": "4.13.4",
+		"mime-types": "~2.1.6",
+		"negotiator": "0.5.3",
+		"grunt": "0.4.5",
+		"grunt-cli": "",
+		"grunt-contrib-watch": "",
+		"grunt-contrib-uglify": "",
+		"grunt-contrib-clean": "",
+		"grunt-contrib-jshint": "",
+		"grunt-contrib-copy": "",
+		"grunt-contrib-imagemin": ""
+	},
+	"description": "My first package",
+	"license": "MIT"
+}

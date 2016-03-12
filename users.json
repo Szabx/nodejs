@@ -1,0 +1,30 @@
+[
+	{
+		"id": 1,
+		"name": "John Doe",
+		"email": "johndoe@example.com",
+		"phone": "+1 70 5240 854 963",
+		"job": "writer"
+	},
+	{
+		"id": 2,
+		"name": "James Doe",
+		"email": "jamesdoe@example.com",
+		"phone": "+1 70 5240 854 963",
+		"job": "reader"
+	},
+	{
+		"id": 3,
+		"name": "Jack Doe",
+		"email": "jackdoe@example.com",
+		"phone": "+1 70 5240 854 963",
+		"job": "publisher"
+	},
+	{
+		"id": 4,
+		"name": "Jules Doe",
+		"email": "julesdoe@example.com",
+		"phone": "+1 70 5240 854 963",
+		"job": "checker"
+	}
+]
