@@ -10,7 +10,14 @@ var st_dir 	= "build";
 var app = express();
 
 // Static files
-app.use(express.static(st_dir));
+app.use(express.static(st_dir, {fallthroigh: true}));
+
+// express.use() function
+
+app.use(function(req, res, next) {
+	console.log("request url: ", req.url);
+	next();
+});
 
 // Setup server (get request)
 // When a request is sent to root, function executes
@@ -53,7 +60,7 @@ app.get('/users/:id*?', function(req, res)
 	// console.log(req.url);
 	handleUsers(req, res, id);
 	// res.send("Hellow world again!");
-})
+});
 
 // Listening port
 app.listen(port);
