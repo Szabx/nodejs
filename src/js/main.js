@@ -2,7 +2,7 @@
 jQuery.getJSON('users', function(users) {
 	
 	/*optional stuff to do after success */
-	console.log('users', users);
+	console.log(users);
 
 	// Write to paragraph
 	// $("body").append("<p>" + JSON.stringify(users) + "</p>");
