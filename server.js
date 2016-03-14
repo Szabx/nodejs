@@ -1,16 +1,18 @@
 // Mddules
 var express 	= require('express');
 var fs 			= require('fs');
-var db 			= require('./model/users');
+var users 		= require('./model/users');
 
 
-// DB Connection
+// users Connection
 var mongoose 	= require('mongoose');
 mongoose.connect("mongodb://localhost/nodejs");
 
 // Set connection
-db.setConnection(mongoose);
-db.create({
+users.setConnection(mongoose);
+
+/* 
+	users.create({
 		name: "Papp Laszlo",
 		email: "pl@pl.pl",
 		phone: "+36707040707",
@@ -24,6 +26,11 @@ db.create({
 	function(data) {
 		console.info(data);
 	});
+*/
+
+users.read({}, function(u) {
+	console.info(u)
+});
 
 // Globals
 var port 	= 3333;

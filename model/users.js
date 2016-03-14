@@ -33,15 +33,25 @@ function setModel() {
 
 // Data read from collection
 function read(where, callback) {
+	if (!where)
+	{
+		where = {};
+	}
 	users.find(where, function(err, data) {
 		if (err)
 		{
 			console.error("Error in query execution: "+err+" in: "+where);
-			callback({});
+			if (callback)
+			{
+				callback({});
+			}
 		}
 		else
 		{
-			callback(data);
+			if (callback)
+			{
+				callback(data);
+			}
 		}
 	});
 }
