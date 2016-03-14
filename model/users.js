@@ -1,9 +1,16 @@
 /**
+ * Mongoose ar
+ */
+var mongoose 	= require("mongoose");
+var Schema 		= mongoose.Schema;
+/**
  * MongoDB datamodell
  * for users table
  */
 var db,
-	users;
+	users,
+	orders
+	models = {};
 /**
  * [setConnection description]
  * @param {[type]} db [description]
@@ -15,10 +22,7 @@ function setConnection(mongoDB) {
 
 
 function setModel() {
-
-
-	// Collection model
-	users = db.model("users", {
+	var uSchema = new Schema({
 		name: String,
 		email: String,
 		phone: String,
@@ -27,9 +31,47 @@ function setModel() {
 		meta: {
 			birth: Date,
 			hobby: String
-		}
-	}, 'users');
+		},
+		orders: [
+			{type: Schema.Types.ObjectId, ref: 'orders'}
+		]
+	});
+
+	uSchema.statics.isAdmin = function(obj, callback) {
+		return this.find({"role":{$lte:2}}, callback);
+	};
+
+	// Collection model
+	users = db.model("users", uSchema, 'users');
+
+	// Order schema
+	var oSchema = new Schema({
+		_creator: {type: Schema.Types.ObjectId, ref: 'users' }, 
+		createDate: Date,
+		description: String,
+		product: String,
+		quantity: Number,
+		price: Number,
+		shippingDate: Date
+	});
+
+	orders = db.model('orders', oSchema, 'orders');
+
+	models['users'] 	= users;
+	models['orders'] 	= orders;
 };
+
+function getModel(modelName)
+{
+	if(!modelName)
+	{
+		return users;
+	}
+	else
+	{
+		return models[modelName];
+	}
+}
 
 // Data read from collection
 function read(where, callback) {
@@ -90,5 +132,6 @@ module.exports = {
 	setConnection:setConnection,
 	read:read,
 	create:create,
-	first: first
+	first: first,
+	getModel: getModel
 };
