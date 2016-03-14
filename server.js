@@ -28,8 +28,8 @@ users.setConnection(mongoose);
 	});
 */
 
-users.read({"role":3}, function(u) {
-	console.info(u)
+users.first({"name":new RegExp("p* l*", 'gi')}, function(u) {
+	console.info(u !== null ? u.name : "No user found!");
 });
 
 // Globals
