@@ -33,6 +33,7 @@ function setModel() {
 
 // Data read from collection
 function read(where, callback) {
+	// Check param
 	if (!where)
 	{
 		where = {};
@@ -41,20 +42,30 @@ function read(where, callback) {
 		if (err)
 		{
 			console.error("Error in query execution: "+err+" in: "+where);
-			if (callback)
-			{
-				callback({});
-			}
+			data = [];
 		}
-		else
+		if (callback)
 		{
-			if (callback)
-			{
-				callback(data);
-			}
+			callback(data);
 		}
 	});
 }
+
+// Query one element 
+function first(where, callback) {
+	read(where, function(data) {
+		var ret;
+		if (data.length > 0)
+		{
+			ret = data[0];
+		}
+		else
+		{
+			ret = null;
+		}
+		callback(ret);
+	});	
+};
 
 // Insert new data to DB
 function create(data, callback) {
@@ -78,5 +89,6 @@ function create(data, callback) {
 module.exports = {
 	setConnection:setConnection,
 	read:read,
-	create:create
+	create:create,
+	first: first
 };

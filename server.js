@@ -28,7 +28,7 @@ users.setConnection(mongoose);
 	});
 */
 
-users.read({}, function(u) {
+users.read({"role":3}, function(u) {
 	console.info(u)
 });
 
