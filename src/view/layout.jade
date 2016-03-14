@@ -1,14 +1,12 @@
 - var classes 	= ['hide', 'fade', 'animate']
-- var attr 		= {'data-ng-change': 'runChangeMethod'}
 
 doctype html
-html(lang="")
+html
 	head
-		link(rel="stylesheet", src="vendor/bootstrap/dist/css/bootstrap.min.css")
-		link(rel="stylesheet", src="vendor/bootstrap/dist/css/bootstrap-theme.min.css")
+		link(rel="stylesheet", src="css/all.min.css")
 		block title
 			title My new website on node.js!
-	body
+	body(data-ng-app="mainModule")
 		block content
 			h1= title
 			h2= message

@@ -1,6 +1,6 @@
 module.exports = function(grunt) {
 
-var mozjpeg = require('imagemin-mozjpeg');
+  var mozjpeg = require('imagemin-mozjpeg');
 
   // Project configuration.
   grunt.initConfig({
@@ -11,10 +11,11 @@ var mozjpeg = require('imagemin-mozjpeg');
       },
       build: {
         src: [
-          'src/vendor/jquery/dist/jquery.min.js',
-          'src/vendor/bootstrap/dist/js/bootstrap.min.js',
-          'src/vendor/angular/angular.min.js',
-          'src/js/*.js'
+        'src/vendor/jquery/dist/jquery.min.js',
+        'src/vendor/bootstrap/dist/js/bootstrap.min.js',
+        'src/vendor/angular/angular.min.js',
+        'src/vendor/angular-currency-filter/currencyModule.js',
+        'src/js/*.js'
         ], 
         dest: 'build/js/all.js'
       }
@@ -40,7 +41,8 @@ var mozjpeg = require('imagemin-mozjpeg');
     			"console": true,
     			"module": true,
     			"$": true,
-    			"require": true
+    			"require": true,
+          "angular": true
     		}
     	},
     	all: ['Gruntfile.js', 'src/js/*.js']
@@ -49,38 +51,52 @@ var mozjpeg = require('imagemin-mozjpeg');
     	main: {
     		files: [
 				// includes files within path 
-				{
-					expand: true, 
-					cwd: 'src/',
-					src: ['**/*.html', 'images/*'], 
-					dest: 'build/', 
-					filter: 'isFile'
-				},
-        {
-          expand: true, 
-          cwd: 'src/',
-          src: ['vendor/**'], 
-          dest: 'build/'
+  				{
+  					expand: true, 
+  					cwd: 'src/',
+  					src: ['**/*.html', 'images/*'], 
+  					dest: 'build/', 
+  					filter: 'isFile'
+  				},
+          {
+            expand: true, 
+            cwd: 'src/',
+            src: ['vendor/**'], 
+            dest: 'build/'
+          }
+        ],
+      },
+    },
+    cssmin: {
+      options: {
+        shorthandCompacting: false,
+        roundingPrecision: -1
+      },
+      target: {
+        files: {
+          'build/css/all.min.css': [
+            'src/vendor/bootstrap/dist/css/bootstrap.min.css', 
+            'src/vendor/bootstrap/dist/css/bootstrap-theme.min.css'
+          ]
         }
-			],
-		},
-	},
-	// Optimize image load
-	imagemin: {
-		dynamic: {
-			options: {
-				optimizationLevel: 3,
-				svgoPlugins: [{ removeViewBox: false }],
-				use: [mozjpeg()]
-			},
-			files: [{
-		        expand: true,
-		        cwd: 'src/images', 
-		        src: ['*.{png,jpg,gif}'], 
-		        dest: 'build/images/'
-		    }]
-		}
-	}
+      }
+    },
+  	// Optimize image load
+    imagemin: {
+      dynamic: {
+        options: {
+          optimizationLevel: 3,
+          svgoPlugins: [{ removeViewBox: false }],
+          use: [mozjpeg()]
+      },
+      files: [{
+        expand: true,
+        cwd: 'src/images', 
+        src: ['*.{png,jpg,gif}'], 
+        dest: 'build/images/'
+      }]
+    }
+  }
 });
 
   // Load the plugin that provides the "uglify" task.
@@ -90,10 +106,11 @@ var mozjpeg = require('imagemin-mozjpeg');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-imagemin');
+  grunt.loadNpmTasks('grunt-contrib-cssmin');
 
 
   // Default task(s).
   grunt.registerTask('default', ['watch']);
-  grunt.registerTask('dev', ['jshint', 'clean', 'uglify', 'copy']);
+  grunt.registerTask('dev', ['jshint', 'clean', 'uglify', 'cssmin', 'copy']);
 
 };

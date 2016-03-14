@@ -100,9 +100,10 @@ app.use(express.static(st_dir, {fallthrough: true}));
 // express.use() function
 
 app.use(function(req, res, next) {
+	console.log(req.headers);
 	if (req.headers['x-requested-with'] == 'XMLHttpRequest')
 	{
-		res.send(JSON.stringify({'hello':'world'}))
+		res.send(JSON.stringify({'hello':'world'}));
 	}
 	else
 	{

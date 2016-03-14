@@ -6,13 +6,17 @@ block title
 block content
 	p
 		| My new content from index is great!
-	div(
-		class= classes
-		id='id1'
-		data-ng-modell='myModel'
-	)&attributes(attr)= message
 
-	.myDiv Message: #{message}
+	.row(data-ng-controller='nameController')
+		.col-xs-3
+			input.form-control(
+				data-ng-model='yourName', 
+				type='text',
+				placeholder='Enter your price'
+			)
+			p Hello {{yourName}}!
+			p Hello other {{otherName(yourName)}}!
+			p Hello another {{anotherName(yourName)}}!
 
 	ul
 		each l in usr
