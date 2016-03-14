@@ -16,7 +16,7 @@ var mozjpeg = require('imagemin-mozjpeg');
     },
     watch: {
     	scripts: {
-    		files: ['src/**/*.js', 'src/**/*.html', 'src/**/*.css'],
+    		files: ['src/**/*.js', 'src/**/*.html', 'src/**/*.css', 'src/**/*.jade'],
     		tasks: ['uglify'],
     		options: {
     			spawn: false,

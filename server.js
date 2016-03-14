@@ -1,6 +1,29 @@
 // Mddules
-var express = require('express');
-var fs 		= require('fs');
+var express 	= require('express');
+var fs 			= require('fs');
+var db 			= require('./model/users');
+
+
+// DB Connection
+var mongoose 	= require('mongoose');
+mongoose.connect("mongodb://localhost/nodejs");
+
+// Set connection
+db.setConnection(mongoose);
+db.create({
+		name: "Papp Laszlo",
+		email: "pl@pl.pl",
+		phone: "+36707040707",
+		address: "1122 Budapest, Palfi u. 12",
+		role: 3,
+		meta: {
+			birth: new Date('1985-07-05'),
+			hobby: "Fishing"
+		}
+	}, 
+	function(data) {
+		console.info(data);
+	});
 
 // Globals
 var port 	= 3333;
@@ -9,25 +32,58 @@ var st_dir 	= "build";
 // Express object
 var app = express();
 
+// Set jade
+app.set('view engine', 'jade');
+app.set('views', './src/view');
+
 // Static files
-app.use(express.static(st_dir));
+app.use(express.static(st_dir, {fallthrough: true}));
+
+// express.use() function
+
+app.use(function(req, res, next) {
+	if (req.headers['x-requested-with'] == 'XMLHttpRequest')
+	{
+		res.send(JSON.stringify({'hello':'world'}))
+	}
+	else
+	{
+		next();
+	}
+});
 
 // Setup server (get request)
 // When a request is sent to root, function executes
 app.get('/', function (req, res) {
-	fs.readFile('./' + st_dir + '/index.html', 'utf8', function(err, data) 
-	{
-		res.send(data);
+	console.log('here');
+	handleUsers(req, res, false, false, function(users) {
+		// Read index file from jade engine
+		res.render('index', { title: 'Hey', message: 'Hello there!', usr: users});
 	});
+
+	// Classical: read index file by path
+
+	// fs.readFile('./' + st_dir + '/index.html', 'utf8', function(err, data) 
+	// {
+	// 	res.send(data);
+	// });
 });
 
 // Users model
-function handleUsers(req, res, id)
+function handleUsers(req, res, id, next, callback)
 {
 	fs.readFile('./users.json', 'utf8', function(err, data) {
 		if (err) throw err;
 		var users 	= JSON.parse(data);
 		var _user 	= {};
+
+		console.log('id', id);
+
+		if (callback)
+		{
+			callback(users);
+			return;
+		}
 
 		if (!id)
 		{
@@ -42,6 +98,8 @@ function handleUsers(req, res, id)
 			}
 		}
 
+		console.log(_user);
+
 		res.send(JSON.stringify(_user));
 	});
 }
@@ -53,7 +111,7 @@ app.get('/users/:id*?', function(req, res)
 	// console.log(req.url);
 	handleUsers(req, res, id);
 	// res.send("Hellow world again!");
-})
+});
 
 // Listening port
 app.listen(port);

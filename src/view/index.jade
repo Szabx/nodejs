@@ -1,0 +1,19 @@
+extends ./layout.jade
+
+block title
+	title  Title from index
+
+block content
+	p
+		| My new content from index is great!
+	div(
+		class= classes
+		id='id1'
+		data-ng-modell='myModel'
+	)&attributes(attr)= message
+
+	.myDiv Message: #{message}
+
+	ul
+		each l in usr
+			li #{l.name} - #{l.email}
