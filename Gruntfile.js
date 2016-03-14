@@ -10,14 +10,19 @@ var mozjpeg = require('imagemin-mozjpeg');
         banner: '/*! Szabx did this :O <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
       },
       build: {
-        src: 'src/**/*.js',
+        src: [
+          'src/vendor/jquery/dist/jquery.min.js',
+          'src/vendor/bootstrap/dist/js/bootstrap.min.js',
+          'src/vendor/angular/angular.min.js',
+          'src/js/*.js'
+        ], 
         dest: 'build/js/all.js'
       }
     },
     watch: {
     	scripts: {
-    		files: ['src/**/*.js', 'src/**/*.html', 'src/**/*.css', 'src/**/*.jade'],
-    		tasks: ['uglify'],
+    		files: ['src/**/*.js', 'src/**/*.html', 'src/**/*.css', 'src/**/*.jade', 'src/vendor/'],
+    		tasks: ['dev'],
     		options: {
     			spawn: false,
     		}
@@ -50,31 +55,13 @@ var mozjpeg = require('imagemin-mozjpeg');
 					src: ['**/*.html', 'images/*'], 
 					dest: 'build/', 
 					filter: 'isFile'
-				}/*,
-
-				// includes files within path and its sub-directories 
-				{
-					expand: true, 
-					src: ['path/**'], 
-					dest: 'dest/'
 				},
-
-				// makes all src relative to cwd 
-				{
-					expand: true, 
-					cwd: 'path/', 
-					src: ['**'], 
-					dest: 'dest/'
-				},
-
-				// flattens results to a single level 
-				{
-					expand: true, 
-					flatten: true, 
-					src: ['path/**'], 
-					dest: 'dest/', 
-					filter: 'isFile'
-				},*/
+        {
+          expand: true, 
+          cwd: 'src/',
+          src: ['vendor/**'], 
+          dest: 'build/'
+        }
 			],
 		},
 	},
@@ -107,6 +94,6 @@ var mozjpeg = require('imagemin-mozjpeg');
 
   // Default task(s).
   grunt.registerTask('default', ['watch']);
-  grunt.registerTask('dev', ['jshint', 'clean', 'uglify', 'copy', 'imagemin']);
+  grunt.registerTask('dev', ['jshint', 'clean', 'uglify', 'copy']);
 
 };

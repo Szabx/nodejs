@@ -113,7 +113,6 @@ app.use(function(req, res, next) {
 // Setup server (get request)
 // When a request is sent to root, function executes
 app.get('/', function (req, res) {
-	console.log('here');
 	handleUsers(req, res, false, false, function(users) {
 		// Read index file from jade engine
 		res.render('index', { title: 'Hey', message: 'Hello there!', usr: users});
@@ -134,8 +133,6 @@ function handleUsers(req, res, id, next, callback)
 		if (err) throw err;
 		var users 	= JSON.parse(data);
 		var _user 	= {};
-
-		console.log('id', id);
 
 		if (callback)
 		{
