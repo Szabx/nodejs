@@ -9,24 +9,38 @@ block content
 
 	.row(data-ng-controller='nameController')
 		.col-xs-3
-			input.form-control(
-				data-ng-model='yourName', 
-				type='text',
-				placeholder='Enter your price'
-			)
-			p Hello {{yourName}}!
-			p Hello other {{otherName(yourName)}}!
-			p Hello another {{anotherName(yourName)}}!
+			div(data-calc-brute="1", data-amount="yourPrice", data-label="price calculator", data-rate="1.16")
+			p Price: 
+				span(data-ng-bind="yourPrice")
+				span !
 
 	.row(data-ng-controller='userController')
 		.col-xs-12
 			table(class="table table-condensed")
 				thead
 					tr
-						th(data-ng-repeat='th in ths') {{th}}
+						th(data-ng-repeat='th in ths', data-ng-bind="th")
 				tbody
+					tr
+						td
+						td
+							input.form-control(data-ng-model='nUser["name"]') 
+						td
+							input.form-control(data-ng-model='nUser["email"]') 
+						td
+							input.form-control(data-ng-model='nUser["phone"]') 
+						td
+							input.form-control(data-ng-model='nUser["address"]') 
+						td
+							.btn-group(role='group')
+								button(
+									type='button', 
+									class='btn btn-info', 
+									data-ng-click='addRecord(nUser)'
+								)
+									span(class="glyphicon glyphicon-plus")
 					tr(data-ng-repeat='row in u')
-						td {{row._id}}
+						td(data-ng-bind="row._id")
 						td
 							input.form-control(data-ng-model='row.name') 
 						td 

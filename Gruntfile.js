@@ -17,6 +17,7 @@ module.exports = function(grunt) {
         'src/vendor/angular-currency-filter/currencyModule.js',
         'src/js/main.js',
         'src/js/factory/*.js',
+        'src/js/directive/*.js',
         'src/js/controller/*.js'
         ], 
         dest: 'build/js/all.js'

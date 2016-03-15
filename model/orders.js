@@ -5,12 +5,10 @@ var mongoose 	= require("mongoose");
 var Schema 		= mongoose.Schema;
 /**
  * MongoDB datamodell
- * for users table
+ * for orders table
  */
 var db,
-	users,
-	orders
-	models = {};
+	orders;
 /**
  * [setConnection description]
  * @param {[type]} db [description]
@@ -22,32 +20,23 @@ function setConnection(mongoDB) {
 
 
 function setModel() {
-	var uSchema = new Schema({
-		name: String,
-		email: String,
-		phone: String,
-		address: String,
-		role: Number,
-		meta: {
-			birth: Date,
-			hobby: String
-		},
-		orders: [
-			{type: Schema.Types.ObjectId, ref: 'orders'}
-		]
+	// Order schema
+	var oSchema = new Schema({
+		user_id: String, 
+		createDate: Date,
+		description: String,
+		product: String,
+		quantity: Number,
+		price: Number,
+		shippingDate: Date
 	});
 
-	uSchema.statics.isAdmin = function(obj, callback) {
-		return this.find({"role":{$lte:2}}, callback);
-	};
-
-	// Collection model
-	users = db.model("users", uSchema, 'users');
+	orders = db.model('orders', oSchema, 'orders');
 };
 
 function getModel(modelName)
 {
-	return users;
+	return orders;
 }
 
 // Data read from collection
@@ -57,7 +46,7 @@ function read(where, callback) {
 	{
 		where = {};
 	}
-	users.find(where, function(err, data) {
+	orders.find(where, function(err, data) {
 		if (err)
 		{
 			console.error("Error in query execution: "+err+" in: "+where);
@@ -89,7 +78,7 @@ function first(where, callback) {
 // Insert new data to DB
 function create(data, callback) {
 	// Create new user model with given dat
-	var u = new users(data);
+	var u = new orders(data);
 	// Save to DB
 	u.save(function(err) { 
 		if (err)

@@ -1,7 +1,7 @@
 // Mddules
 var express 	= require('express');
 var fs 			= require('fs');
-
+var bodyParser 	= require('body-parser')
 
 // users Connection
 var mongoose 	= require('mongoose');
@@ -12,9 +12,11 @@ var models 		= {};
 
 // Users model in global models
 models.users 	= require('./model/users');
+models.orders 	= require('./model/orders');
 
 // Set users model connection
 models.users.setConnection(mongoose);
+models.orders.setConnection(mongoose);
 
 // Save order to user
 
@@ -29,42 +31,53 @@ var app = express();
 app.set('view engine', 'jade');
 app.set('views', './src/view');
 
+// Bodyparser
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// parse application/json
+app.use(bodyParser.json());
+
 // Static files
 app.use(express.static(st_dir, {fallthrough: true}));
 
 // express.use() function
 
 app.use('/:model/:id*?', function(req, res, next) {
-	if (req.headers['x-requested-with'] == 'XMLHttpRequest')
+	if (req.headers['x-requested-with'] == 'XMLHttpRequest' && req.params.model !== 'template')
 	{
 		switch (req.method.toLowerCase()) {
 			case 'get': 
-				models[req.params.model].getModel().find({}, function(err, data) {
-					res.send(JSON.stringify(data));			
+				var query = {};
+				if (req.params.id) {
+					query = {"_id":req.params.id}
+				}
+				models[req.params.model].getModel().find(query, function(err, data) {
+					if (req.params.id) {
+						res.send(JSON.stringify(data[0]));	
+					}
+					else {
+						res.send(JSON.stringify(data));	
+					}
 				});
 				break;
 			case 'post':
 				// Catch data packages
-				var req_body = "";
-				req.on('data', function(p) {
-					req_body += p;
-				});
+				var req_body = req.body;
 
-				req.on('end', function() {
-					req_body 	= JSON.parse(req_body);
-
-					var query 	= {_id: req_body._id}
-					var nData 	= {};
-					for (var i in req_body) {
-						if (i == "_id")
-						{
-							continue;
-						}
-						nData[i] = req_body[i]
+				var query 	= {_id: req_body._id}
+				var nData 	= {};
+				for (var i in req_body) {
+					if (i == "_id")
+					{
+						continue;
 					}
-					models[req.params.model].getModel().update(query, nData, function(err, data) {
-						res.send('{"Success":true}');	
-					});
+					nData[i] = req_body[i]
+				}
+
+				models[req.params.model].getModel().update(query, nData, function(err, data) {
+					res.send('{"Success":true}');	
 				});
 				break;
 			case 'delete':
@@ -83,6 +96,28 @@ app.use('/:model/:id*?', function(req, res, next) {
 				{
 					res.send('{"error":"No id recieved"}');
 				}
+				break;
+			case 'put':
+				var req_body = req.body;
+
+				var nData 	= {};
+				for (var i in req_body) {
+					if (i == "_id")
+					{
+						continue;
+					}
+					nData[i] = req_body[i]
+				}
+
+				models[req.params.model].getModel().create(nData, function(err, data) {
+					if(err) {
+						console.error("Error: ", err);
+						res/send('{"Success":false}');
+					}
+					else {
+						res.send('{"Success":true}');
+					}	
+				});
 				break;
 			default:
 				res.send('{"error": "Unsopported method"}');
@@ -142,6 +177,15 @@ function handleUsers(req, res, id, next, callback)
 		res.send(JSON.stringify(_user));
 	});
 }
+
+// Template requests
+app.get('/template/:name', function(req, res, next) {
+	if (!req.params.name) {
+		next();
+	} else {
+		res.render('template/'+req.params.name);
+	}
+})
 
 // Read user.json
 app.get('/users/:id*?', function(req, res) 
