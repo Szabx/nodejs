@@ -18,6 +18,18 @@ block content
 			p Hello other {{otherName(yourName)}}!
 			p Hello another {{anotherName(yourName)}}!
 
-	ul
-		each l in usr
-			li #{l.name} - #{l.email}
+	.row(data-ng-controller='userController')
+		.col-m-12
+			table(class="table table-condensed")
+				thead
+					tr
+						th(data-ng-repeat='th in ths') {{th}}
+				tbody
+					tr(data-ng-repeat='row in u')
+						td {{row._id}}
+						td {{row.name}}
+						td {{row.email}}
+						td {{row.phone}}
+						td {{row.address}}
+				// - each l in usr
+				// -	li #{l.name} - #{l.email}

@@ -15,21 +15,23 @@ module.exports = function(grunt) {
         'src/vendor/bootstrap/dist/js/bootstrap.min.js',
         'src/vendor/angular/angular.min.js',
         'src/vendor/angular-currency-filter/currencyModule.js',
-        'src/js/*.js'
+        'src/js/main.js',
+        'src/js/factory/*.js',
+        'src/js/controller/*.js'
         ], 
         dest: 'build/js/all.js'
       }
     },
     watch: {
     	scripts: {
-    		files: ['src/**/*.js', 'src/**/*.html', 'src/**/*.css', 'src/**/*.jade', 'src/vendor/'],
+    		files: ['src/**/*.js', 'src/**/*.html', 'src/**/*.css', 'src/**/*.jade', 'Gruntfile.js'],
     		tasks: ['dev'],
     		options: {
     			spawn: false,
     		}
     	}
     },
-    clean: ['build/**'],
+    clean: ['build/js/**'],
     jshint: {
     	options: {
     		"curly": true,

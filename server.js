@@ -100,10 +100,11 @@ app.use(express.static(st_dir, {fallthrough: true}));
 // express.use() function
 
 app.use(function(req, res, next) {
-	console.log(req.headers);
 	if (req.headers['x-requested-with'] == 'XMLHttpRequest')
 	{
-		res.send(JSON.stringify({'hello':'world'}));
+		users.getModel().find({}, function(err, data) {
+			res.send(JSON.stringify(data));			
+		});
 	}
 	else
 	{
@@ -153,9 +154,6 @@ function handleUsers(req, res, id, next, callback)
 					_user = users[i];
 			}
 		}
-
-		console.log(_user);
-
 		res.send(JSON.stringify(_user));
 	});
 }
@@ -171,5 +169,3 @@ app.get('/users/:id*?', function(req, res)
 
 // Listening port
 app.listen(port);
-
-console.log("Server running in localhost:" + port);
