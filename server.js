@@ -1,85 +1,20 @@
 // Mddules
 var express 	= require('express');
 var fs 			= require('fs');
-var users 		= require('./model/users');
 
 
 // users Connection
 var mongoose 	= require('mongoose');
 mongoose.connect("mongodb://localhost/nodejs");
 
-// Set connection
-users.setConnection(mongoose);
+// Global models var
+var models 		= {};
 
-/* 
-	users.create({
-		name: "Papp Laszlo",
-		email: "pl@pl.pl",
-		phone: "+36707040707",
-		address: "1122 Budapest, Palfi u. 12",
-		role: 3,
-		meta: {
-			birth: new Date('1985-07-05'),
-			hobby: "Fishing"
-		}
-	}, 
-	function(data) {
-		console.info(data);
-	});
-*/
+// Users model in global models
+models.users 	= require('./model/users');
 
-
-	users.first({"name":new RegExp("old", 'gi')}, function(u) {
-		if (u !== null)
-		{
-			// var o = new users.getModel('orders');
-			// // console.log(o);
-			// o._creator = u._id;
-			// o.createDate = new Date(),
-			// o.description = "First order",
-			// o.product = "Csizma",
-			// o.quantity = 4,
-			// o.price = 5995,
-			// o.shippingDate = new Date('2016-06-01');
-			// o.save(function(err) {
-			// 	console.error(err);
-			// });
-			console.log(u);
-		}
-		else
-		{
-			console.info(null);
-		}
-	});
-
-
-/*
-	users.getModel().isAdmin({}, function(err, data) {
-		console.info(data);
-	});
-*/
-
-/*
-	users.getModel().update({name: new RegExp('b', 'gi')}, {girlFriend:"Piri Piroska"}, function(err, user) {
-		if (err)
-		{
-			consoel.error(err);
-		}
-	});
-*/
-
-/*
-	users.getModel().remove({'name': new RegExp('jack', 'gi')}, function(err, rmv) {
-		if (err)
-		{
-			console.error(err);
-		}
-		else
-		{
-			console.log("Removed: "+rmv.result);
-		}
-	});
-*/
+// Set users model connection
+models.users.setConnection(mongoose);
 
 // Save order to user
 
@@ -99,12 +34,60 @@ app.use(express.static(st_dir, {fallthrough: true}));
 
 // express.use() function
 
-app.use(function(req, res, next) {
+app.use('/:model/:id*?', function(req, res, next) {
 	if (req.headers['x-requested-with'] == 'XMLHttpRequest')
 	{
-		users.getModel().find({}, function(err, data) {
-			res.send(JSON.stringify(data));			
-		});
+		switch (req.method.toLowerCase()) {
+			case 'get': 
+				models[req.params.model].getModel().find({}, function(err, data) {
+					res.send(JSON.stringify(data));			
+				});
+				break;
+			case 'post':
+				// Catch data packages
+				var req_body = "";
+				req.on('data', function(p) {
+					req_body += p;
+				});
+
+				req.on('end', function() {
+					req_body 	= JSON.parse(req_body);
+
+					var query 	= {_id: req_body._id}
+					var nData 	= {};
+					for (var i in req_body) {
+						if (i == "_id")
+						{
+							continue;
+						}
+						nData[i] = req_body[i]
+					}
+					models[req.params.model].getModel().update(query, nData, function(err, data) {
+						res.send('{"Success":true}');	
+					});
+				});
+				break;
+			case 'delete':
+				if (req.params.id)
+				{
+					var query = {_id: req.params.id};
+					models[req.params.model].getModel().remove(query, function(err, rmv) {
+						if (err)
+						{
+							console.error(err);
+						}
+						res.send(JSON.stringify(rmv))
+					});
+				}
+				else
+				{
+					res.send('{"error":"No id recieved"}');
+				}
+				break;
+			default:
+				res.send('{"error": "Unsopported method"}');
+				break;
+		}
 	}
 	else
 	{
@@ -127,6 +110,8 @@ app.get('/', function (req, res) {
 	// 	res.send(data);
 	// });
 });
+
+// Update user, look for 
 
 // Users model
 function handleUsers(req, res, id, next, callback)

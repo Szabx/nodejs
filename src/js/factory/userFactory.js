@@ -16,6 +16,32 @@ mainModule.factory('userFactory', ['$http', '$q', function($http, $q) {
 
 			// Return promise object
 			return defer.promise;
+		},
+		updateUser: function(user) {
+			var defer = $q.defer();
+
+			$http.post('/users', user)
+				.then(function(msg) {
+					defer.resolve(msg);
+				},
+				function(err) {
+					defer.reject(err);
+				});
+
+			return defer.promise;
+		},
+		removeUser: function(user) {
+			var defer = $q.defer();
+
+			$http.delete('/users/'+user._id)
+				.then(function(msg) {
+					defer.resolve(msg);
+				},
+				function(err) {
+					defer.reject(err);
+				});
+
+			return defer.promise;
 		}
 	}
 }])

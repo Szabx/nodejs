@@ -19,7 +19,7 @@ block content
 			p Hello another {{anotherName(yourName)}}!
 
 	.row(data-ng-controller='userController')
-		.col-m-12
+		.col-xs-12
 			table(class="table table-condensed")
 				thead
 					tr
@@ -27,9 +27,25 @@ block content
 				tbody
 					tr(data-ng-repeat='row in u')
 						td {{row._id}}
-						td {{row.name}}
-						td {{row.email}}
-						td {{row.phone}}
-						td {{row.address}}
-				// - each l in usr
-				// -	li #{l.name} - #{l.email}
+						td
+							input.form-control(data-ng-model='row.name') 
+						td 
+							input.form-control(data-ng-model='row.email')
+						td 
+							input.form-control(data-ng-model='row.phone')
+						td 
+							input.form-control(data-ng-model='row.address')
+						td
+							.btn-group(role='group')
+								button(
+									type='button', 
+									class='btn btn-info', 
+									data-ng-click='updateRecord(row)'
+								)
+									span(class="glyphicon glyphicon-refresh")
+								button(
+									type='button', 
+									class='btn btn-danger', 
+									data-ng-click='removeRecord(row)'
+								) 
+									span(class="glyphicon glyphicon-remove-sign")
